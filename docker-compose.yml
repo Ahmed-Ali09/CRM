@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: crm-postgres
+    environment:
+      POSTGRES_USER: crmuser
+      POSTGRES_PASSWORD: crmpass
+      POSTGRES_DB: crmdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: crm-flask
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URI: postgresql://crmuser:crmpass@db:5432/crmdb
+
+volumes:
+  pgdata:
